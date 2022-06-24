@@ -46,6 +46,8 @@ jobs:
       with:
         version: "latest"
         min-go-version: ${{ env.GOLANG_VERSION }}
+        install-go: false
+        cache-key: ${{ env.GOLANG_VERSION }}
 
     # Run Tests
     - name: Test
