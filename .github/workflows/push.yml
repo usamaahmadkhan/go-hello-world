@@ -37,17 +37,14 @@ jobs:
         args: --timeout 10m
 
     # Run Preliminary code tests
-    - name: Preliminary GO code checks 
+    - name: Static code Analysis
       run: make vet
 
-    # Run Static code analysis tests
-    - name: Static Code Analysis Check
-      uses: dominikh/staticcheck-action@v1.2.0
-      with:
-        version: "latest"
-        min-go-version: ${{ env.GOLANG_VERSION }}
-        install-go: false
-        cache-key: ${{ env.GOLANG_VERSION }}
+    # Run Vulnerability analysis tests
+    - name: Vulnerability Analysis
+      uses: snyk/actions/golang@master
+      env:
+        SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
 
     # Run Tests
     - name: Test
