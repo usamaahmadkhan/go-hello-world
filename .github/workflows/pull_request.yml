@@ -35,10 +35,11 @@ jobs:
         args: --timeout 10m
 
     # Run Preliminary code tests
-    - name: Static Code Analysis
+    - name: Preliminary GO code checks 
       run: make vet
 
     # Run Static code analysis tests
+    - name: Static Code Analysis Check
 	  - uses: dominikh/staticcheck-action@v1.2.0
       with:
         version: "2022.1.1"
