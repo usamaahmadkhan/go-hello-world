@@ -12,7 +12,7 @@ env:
   GOLANG_VERSION: 1.18
 
 jobs:
-  build:
+  CI:
     runs-on: ubuntu-latest
     name: Build
     if: "! contains(toJSON(github.event.commits.*.message), '[skip-ci]')"
@@ -44,6 +44,7 @@ jobs:
       with:
         version: "latest"
         min-go-version: ${{ env.GOLANG_VERSION }}
+        install-go: false
 
     # Run Tests
     - name: Test
