@@ -13,7 +13,7 @@ fmt:
 
 # Run go vet against code
 .PHONY: vet
-vet:
+vet: fmt
 	go vet ./...
 
 # Lint
@@ -23,7 +23,7 @@ lint:
 
 # Unit-test
 .PHONY: test
-test: fmt lint
+test:
 	go test ./...
 
 # Run against the configured Kubernetes cluster in ~/.kube/config

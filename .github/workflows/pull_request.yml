@@ -42,10 +42,6 @@ jobs:
     - name: Test
       run: make test
 
-    # Set up helm binary
-    - name: Set up Helm
-      uses: azure/setup-helm@v1
-
     # Generate Tag for Image
     - name: Generate Tag
       id: generate_tag
