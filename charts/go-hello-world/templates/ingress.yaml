@@ -1,14 +1,11 @@
 {{- if .Values.ingress.enabled -}}
 {{- $fullName := include "go-hello-world.fullname" . -}}
-{{- $svcPort := .Values.service.port -}}
-{{- if semverCompare ">=1.14-0" .Capabilities.KubeVersion.GitVersion -}}
-apiVersion: networking.k8s.io/v1beta1
-{{- else -}}
-apiVersion: extensions/v1beta1
-{{- end }}
+{{- $svcPort := .Values.service.name -}}
+apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: {{ $fullName }}
+  namespace: {{ .Release.Namespace }}
   labels:
     {{- include "go-hello-world.labels" . | nindent 4 }}
   {{- with .Values.ingress.annotations }}
@@ -33,9 +30,12 @@ spec:
         paths:
         {{- range .paths }}
           - path: {{ . }}
+            pathType: ImplementationSpecific
             backend:
-              serviceName: {{ $fullName }}
-              servicePort: {{ $svcPort }}
+              service:
+                name:  {{ $fullName }}
+                port:
+                  name: {{ $svcPort }}
         {{- end }}
   {{- end }}
 {{- end }}
