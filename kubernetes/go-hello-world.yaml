@@ -4,11 +4,12 @@ apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: go-hello-world
+  namespace: hello-demo
   labels:
     helm.sh/chart: go-hello-world-0.0.1
     app.kubernetes.io/name: go-hello-world
     app.kubernetes.io/instance: go-hello-world
-    app.kubernetes.io/version: "v0.0.2"
+    app.kubernetes.io/version: "v0.0.3"
     app.kubernetes.io/managed-by: Helm
 ---
 # Source: go-hello-world/templates/service.yaml
@@ -16,14 +17,15 @@ apiVersion: v1
 kind: Service
 metadata:
   name: go-hello-world
+  namespace: hello-demo
   labels:
     helm.sh/chart: go-hello-world-0.0.1
     app.kubernetes.io/name: go-hello-world
     app.kubernetes.io/instance: go-hello-world
-    app.kubernetes.io/version: "v0.0.2"
+    app.kubernetes.io/version: "v0.0.3"
     app.kubernetes.io/managed-by: Helm
 spec:
-  type: NodePort
+  type: ClusterIP
   ports:
     - port: 5000
       targetPort: 8080
@@ -38,11 +40,12 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: go-hello-world
+  namespace: hello-demo
   labels:
     helm.sh/chart: go-hello-world-0.0.1
     app.kubernetes.io/name: go-hello-world
     app.kubernetes.io/instance: go-hello-world
-    app.kubernetes.io/version: "v0.0.2"
+    app.kubernetes.io/version: "v0.0.3"
     app.kubernetes.io/managed-by: Helm
 spec:
   replicas: 3
@@ -69,20 +72,20 @@ spec:
             readOnlyRootFilesystem: true
             runAsNonRoot: true
             runAsUser: 1000
-          image: "docker.io/usamaahmadkhan/go-hello-world:v0.0.2"
+          image: "docker.io/usamaahmadkhan/go-hello-world:v0.0.3"
           imagePullPolicy: IfNotPresent
           ports:
             - name: http
-              containerPort: 80
+              containerPort: 8080
               protocol: TCP
           livenessProbe:
             httpGet:
               path: /
-              port: http
+              port: 8080
           readinessProbe:
             httpGet:
               path: /
-              port: http
+              port: 8080
           resources:
             limits:
               cpu: 50m
@@ -100,3 +103,28 @@ spec:
                 values:
                 - go-hello-world
             topologyKey: kubernetes.io/hostname
+---
+# Source: go-hello-world/templates/ingress.yaml
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: go-hello-world
+  namespace: hello-demo
+  labels:
+    helm.sh/chart: go-hello-world-0.0.1
+    app.kubernetes.io/name: go-hello-world
+    app.kubernetes.io/instance: go-hello-world
+    app.kubernetes.io/version: "v0.0.3"
+    app.kubernetes.io/managed-by: Helm
+spec:
+  rules:
+    - host: "hello.apps-crc.testing"
+      http:
+        paths:
+          - path: /
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name:  go-hello-world
+                port:
+                  name: http
