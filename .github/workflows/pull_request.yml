@@ -38,23 +38,17 @@ jobs:
         args: --timeout 10m
 
     # Run Preliminary code tests
-    - name: Static code Analysis
+    - name: GOLANG Static code Analysis
       run: make vet
 
     # Run Vulnerability analysis tests
-    - name: Vulnerability Analysis
+    - name: Run Snyk for Code Vulnerability Analysis
       uses: snyk/actions/golang@master
       env:
         SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
       with:
         command: code test
         args: --severity-threshold=low --print-deps --detection-depth=2 --sarif-file-output=snyk.sarif
-
-    # Upload results
-    - name: Upload result to GitHub Code Scanning
-      uses: github/codeql-action/upload-sarif@v2
-      with:
-        sarif_file: snyk.sarif
 
     # Run Tests
     - name: Test
@@ -89,6 +83,7 @@ jobs:
       run: |
         echo IMAGE_REPOSITORY=$(echo ${{ secrets.DOCKER_REGISTRY }}/${{ github.repository }} | tr '[:upper:]' '[:lower:]') >> $GITHUB_ENV
 
+    # Push Image to Image registry
     - name: Build and push
       uses: docker/build-push-action@v2
       with:
@@ -104,6 +99,20 @@ jobs:
           org.opencontainers.image.source=${{ github.event.repository.clone_url }}
           org.opencontainers.image.created=${{ steps.prep.outputs.created }}
           org.opencontainers.image.revision=${{ github.sha }}
+
+    # Image Scanning
+    - name: Run Snyk to check Image for vulnerabilities
+      uses: snyk/actions/docker@master 
+      env:
+        SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+      with:
+        image: ${{ env.IMAGE_REPOSITORY }}:${{ steps.generate_tag.outputs.GIT_TAG }}
+
+    # Upload results
+    - name: Upload result to GitHub Code Scanning
+      uses: github/codeql-action/upload-sarif@v2
+      with:
+        sarif_file: snyk.sarif
 
     - name: Comment on PR
       uses: mshick/add-pr-comment@v1
