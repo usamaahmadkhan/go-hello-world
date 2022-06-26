@@ -2,6 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ include "go-hello-world.fullname" . }}
+  namespace: {{ .Release.Namespace }}
   labels:
     {{- include "go-hello-world.labels" . | nindent 4 }}
 spec:
@@ -29,16 +30,16 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
             - name: http
-              containerPort: 80
+              containerPort: {{ .Values.service.targetPort }}
               protocol: TCP
           livenessProbe:
             httpGet:
               path: /
-              port: http
+              port: {{ .Values.service.targetPort }}
           readinessProbe:
             httpGet:
               path: /
-              port: http
+              port: {{ .Values.service.targetPort }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       {{- with .Values.nodeSelector }}

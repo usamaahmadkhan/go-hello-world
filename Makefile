@@ -62,4 +62,4 @@ bump-version:
 # Generate Manifests
 .PHONY: manifests
 manifests: bump-version
-	helm template --release-name $(NAME) charts/$(NAME)/ > kubernetes/$(NAME).yaml
+	helm template --namespace hello-demo --release-name $(NAME) charts/$(NAME)/ > kubernetes/$(NAME).yaml

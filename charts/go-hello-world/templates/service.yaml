@@ -2,6 +2,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: {{ include "go-hello-world.fullname" . }}
+  namespace: {{ .Release.Namespace }}
   labels:
     {{- include "go-hello-world.labels" . | nindent 4 }}
 spec:
@@ -10,6 +11,6 @@ spec:
     - port: {{ .Values.service.port }}
       targetPort: {{ .Values.service.targetPort }}
       protocol: TCP
-      name: http
+      name: {{ .Values.service.name }}
   selector:
     {{- include "go-hello-world.selectorLabels" . | nindent 4 }}
