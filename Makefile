@@ -1,4 +1,4 @@
-VERSION ?= 0.0.1
+VERSION ?= 
 NAME ?=go-hello-world
 IMAGE_TAG_BASE ?= docker.io/usamaahmadkhan/$(NAME)
 IMG ?= $(IMAGE_TAG_BASE):v$(VERSION)
