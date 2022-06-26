@@ -1,19 +1,21 @@
 VERSION ?= 0.0.1
-IMAGE_TAG_BASE ?= docker.io/usamaahmadkhan/go-hello-world
+NAME ?=go-hello-world
+IMAGE_TAG_BASE ?= docker.io/usamaahmadkhan/$(NAME)
 IMG ?= $(IMAGE_TAG_BASE):v$(VERSION)
 SHELL = /usr/bin/env bash -o pipefail
 
+# Run Build
 .PHONY: all
 all: build
 
-
+# Run Formatting checks
 .PHONY: fmt
 fmt:
 	go fmt ./...
 
 # Run go vet against code
 .PHONY: vet
-vet:
+vet: fmt
 	go vet ./...
 
 # Lint
@@ -23,7 +25,7 @@ lint:
 
 # Unit-test
 .PHONY: test
-test: fmt lint
+test:
 	go test ./...
 
 # Run against the configured Kubernetes cluster in ~/.kube/config
@@ -46,10 +48,18 @@ docker-build: test
 docker-push:
 	docker push ${IMG}
 
-.PHONY: bump-chart-operator
-bump-chart-operator:
+# Generate Helm Chart
+.PHONY: generate-chart
+generate-chart:
+	helm create $(NAME)
+
+# Bump Version
+.PHONY: bump-version
+bump-version:
 	sed -i "s/^VERSION ?=.*/VERSION ?= $(VERSION)/" Makefile
-	sed -i "s/newTag:.*/newTag: v$(VERSION)/" config/manager/kustomization.yaml
-	sed -i "s/^version:.*/version:  $(VERSION)/" charts/tenant-operator/Chart.yaml
-	sed -i "s/^appVersion:.*/appVersion:  $(VERSION)/" charts/tenant-operator/Chart.yaml
-	sed -i "s/tag:.*/tag:  v$(VERSION)/" charts/tenant-operator/values.yaml
+	sed -i "s/^appVersion:.*/appVersion: $(VERSION)/" charts/$(NAME)/Chart.yaml
+
+# Generate Manifests
+.PHONY: manifests
+manifests: bump-version
+	helm template --release-name $(NAME) charts/$(NAME)/ > kubernetes/$(NAME).yaml
