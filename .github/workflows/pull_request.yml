@@ -46,6 +46,8 @@ jobs:
       uses: snyk/actions/golang@master
       env:
         SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+      with:
+        args: code test --severity-threshold=low --print-deps --detection-depth=5
 
     # Run Tests
     - name: Test

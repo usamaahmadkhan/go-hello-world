@@ -57,9 +57,9 @@ generate-chart:
 .PHONY: bump-version
 bump-version:
 	sed -i "s/^VERSION ?=.*/VERSION ?= $(VERSION)/" Makefile
-	sed -i "s/^appVersion:.*/appVersion:  $(VERSION)/" charts/$(NAME)/Chart.yaml
+	sed -i "s/^appVersion:.*/appVersion: $(VERSION)/" charts/$(NAME)/Chart.yaml
 
 # Generate Manifests
 .PHONY: manifests
 manifests: bump-version
-	helm template --release-name $(NAME) charts/$(NAME) / > kubernetes/$(NAME).yaml
+	helm template --release-name $(NAME) charts/$(NAME)/ > kubernetes/$(NAME).yaml
