@@ -8,6 +8,7 @@ metadata:
     helm.sh/chart: go-hello-world-0.0.1
     app.kubernetes.io/name: go-hello-world
     app.kubernetes.io/instance: go-hello-world
+    app.kubernetes.io/version: "v0.0.2"
     app.kubernetes.io/managed-by: Helm
 ---
 # Source: go-hello-world/templates/service.yaml
@@ -19,6 +20,7 @@ metadata:
     helm.sh/chart: go-hello-world-0.0.1
     app.kubernetes.io/name: go-hello-world
     app.kubernetes.io/instance: go-hello-world
+    app.kubernetes.io/version: "v0.0.2"
     app.kubernetes.io/managed-by: Helm
 spec:
   type: NodePort
@@ -40,6 +42,7 @@ metadata:
     helm.sh/chart: go-hello-world-0.0.1
     app.kubernetes.io/name: go-hello-world
     app.kubernetes.io/instance: go-hello-world
+    app.kubernetes.io/version: "v0.0.2"
     app.kubernetes.io/managed-by: Helm
 spec:
   replicas: 3
@@ -59,13 +62,14 @@ spec:
       containers:
         - name: go-hello-world
           securityContext:
+            allowPrivilegeEscalation: false
             capabilities:
               drop:
               - ALL
             readOnlyRootFilesystem: true
             runAsNonRoot: true
             runAsUser: 1000
-          image: "docker.io/usamaahmadkhan/go-hello-world:"
+          image: "docker.io/usamaahmadkhan/go-hello-world:v0.0.2"
           imagePullPolicy: IfNotPresent
           ports:
             - name: http
