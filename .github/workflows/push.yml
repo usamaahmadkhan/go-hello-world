@@ -127,9 +127,9 @@ jobs:
       env:
         SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
       with:
-        file: .
-        args: --severity-threshold=low
-    
+        file: kubernetes/
+        args: --severity-threshold=medium
+
     # Upload results
     - name: Upload result to GitHub Code Scanning
       uses: github/codeql-action/upload-sarif@v2
