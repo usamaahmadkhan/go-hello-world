@@ -108,6 +108,21 @@ jobs:
       with:
         image: ${{ env.IMAGE_REPOSITORY }}:${{ steps.generate_tag.outputs.GIT_TAG }}
 
+    # Generate manifests for the latest semver tag
+    - name: Bump Version
+      env:
+        VERSION: ${{ steps.generate_tag.outputs.new_tag }}
+      run: make manifests
+
+    # Run Snyk for IaC assessment
+    - name: Run Snyk to check configuration files for security issues
+      uses: snyk/actions/iac@master
+      env:
+        SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+      with:
+        file: kubernetes/
+        args: --severity-threshold=medium
+
     # Upload results
     - name: Upload result to GitHub Code Scanning
       uses: github/codeql-action/upload-sarif@v2
