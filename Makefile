@@ -1,7 +1,7 @@
 VERSION ?= v0.0.4
 NAME ?=go-hello-world
 IMAGE_TAG_BASE ?= docker.io/usamaahmadkhan/$(NAME)
-IMG ?= $(IMAGE_TAG_BASE):v$(VERSION)
+IMG ?= $(IMAGE_TAG_BASE):$(VERSION)
 SHELL = /usr/bin/env bash -o pipefail
 
 # Run Build

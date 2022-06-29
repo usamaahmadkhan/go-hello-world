@@ -33,7 +33,7 @@ jobs:
     - name: Lint
       uses: golangci/golangci-lint-action@v2.3.0
       with:
-        version: v1.45.2
+        version: v1.46.2
         only-new-issues: false
         args: --timeout 10m
 
@@ -49,6 +49,12 @@ jobs:
       with:
         command: code test
         args: --severity-threshold=low --print-deps --detection-depth=2 --sarif-file-output=snyk.sarif
+
+    # Upload results
+    - name: Upload result to GitHub Code Scanning
+      uses: github/codeql-action/upload-sarif@v2
+      with:
+        sarif_file: snyk.sarif
 
     # Run Tests
     - name: Test
@@ -107,9 +113,31 @@ jobs:
         SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
       with:
         image: ${{ env.IMAGE_REPOSITORY }}:${{ steps.generate_tag.outputs.GIT_TAG }}
+        args: --file=Dockerfile --sarif-file-output=snyk.sarif
 
     # Upload results
-    - name: Upload result to GitHub Code Scanning
+    - name: Upload result to GitHub Image Scanning
+      uses: github/codeql-action/upload-sarif@v2
+      with:
+        sarif_file: snyk.sarif
+
+    # Generate manifests for the latest semver tag
+    - name: Bump Version
+      env:
+        VERSION: ${{ steps.generate_tag.outputs.new_tag }}
+      run: make manifests
+
+    # Run Snyk for IaC assessment
+    - name: Run Snyk to check configuration files for security issues
+      uses: snyk/actions/iac@master
+      env:
+        SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+      with:
+        file: kubernetes/
+        args: --severity-threshold=medium
+
+    # Upload results
+    - name: Upload result to GitHub IaC Scanning
       uses: github/codeql-action/upload-sarif@v2
       with:
         sarif_file: snyk.sarif
