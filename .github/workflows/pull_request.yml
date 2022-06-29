@@ -113,6 +113,7 @@ jobs:
         SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
       with:
         image: ${{ env.IMAGE_REPOSITORY }}:${{ steps.generate_tag.outputs.GIT_TAG }}
+        args: --file=Dockerfile --sarif-file-output=snyk.sarif
 
     # Upload results
     - name: Upload result to GitHub Image Scanning
