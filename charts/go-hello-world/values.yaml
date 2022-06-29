@@ -11,8 +11,8 @@ image:
 strategy:
   type: RollingUpdate
   rollingUpdate:
-    maxUnavailable: 0
-    maxSurge: 1
+    maxUnavailable: 1
+    maxSurge: 2
 
 imagePullSecrets: []
 nameOverride: ""
@@ -71,13 +71,13 @@ nodeSelector: {}
 
 tolerations: []
 
-affinity:
-  podAntiAffinity:
-    requiredDuringSchedulingIgnoredDuringExecution:
-    - labelSelector:
-        matchExpressions:
-        - key: "app.kubernetes.io/name"
-          operator: In
-          values:
-          - go-hello-world
-      topologyKey: "kubernetes.io/hostname"
+affinity: {}
+  # podAntiAffinity:
+  #   requiredDuringSchedulingIgnoredDuringExecution:
+  #   - labelSelector:
+  #       matchExpressions:
+  #       - key: "app.kubernetes.io/name"
+  #         operator: In
+  #         values:
+  #         - go-hello-world
+  #     topologyKey: "kubernetes.io/hostname"
