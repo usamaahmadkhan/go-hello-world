@@ -43,6 +43,11 @@ build: fmt vet lint
 docker-build: test
 	docker build . -t ${IMG}
 
+# Run the docker image
+.PHONY: docker-run
+docker-run:
+	docker run ${IMG}
+
 # Push the docker image
 .PHONY: docker-push
 docker-push:
