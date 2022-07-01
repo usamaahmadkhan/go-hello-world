@@ -9,7 +9,7 @@ metadata:
     helm.sh/chart: go-hello-world-0.0.1
     app.kubernetes.io/name: go-hello-world
     app.kubernetes.io/instance: go-hello-world
-    app.kubernetes.io/version: "v0.0.6"
+    app.kubernetes.io/version: "v0.0.7"
     app.kubernetes.io/managed-by: Helm
 ---
 # Source: go-hello-world/templates/service.yaml
@@ -22,7 +22,7 @@ metadata:
     helm.sh/chart: go-hello-world-0.0.1
     app.kubernetes.io/name: go-hello-world
     app.kubernetes.io/instance: go-hello-world
-    app.kubernetes.io/version: "v0.0.6"
+    app.kubernetes.io/version: "v0.0.7"
     app.kubernetes.io/managed-by: Helm
 spec:
   type: ClusterIP
@@ -45,7 +45,7 @@ metadata:
     helm.sh/chart: go-hello-world-0.0.1
     app.kubernetes.io/name: go-hello-world
     app.kubernetes.io/instance: go-hello-world
-    app.kubernetes.io/version: "v0.0.6"
+    app.kubernetes.io/version: "v0.0.7"
     app.kubernetes.io/managed-by: Helm
 spec:
   replicas: 3
@@ -76,7 +76,7 @@ spec:
               - ALL
             readOnlyRootFilesystem: true
             runAsNonRoot: true
-          image: "docker.io/usamaahmadkhan/go-hello-world:v0.0.6"
+          image: "docker.io/usamaahmadkhan/go-hello-world:v0.0.7"
           imagePullPolicy: IfNotPresent
           ports:
             - name: http
@@ -108,7 +108,7 @@ metadata:
     helm.sh/chart: go-hello-world-0.0.1
     app.kubernetes.io/name: go-hello-world
     app.kubernetes.io/instance: go-hello-world
-    app.kubernetes.io/version: "v0.0.6"
+    app.kubernetes.io/version: "v0.0.7"
     app.kubernetes.io/managed-by: Helm
 spec:
   rules:
